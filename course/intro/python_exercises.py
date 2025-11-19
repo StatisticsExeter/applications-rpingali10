@@ -46,7 +46,7 @@ def count_occurrences(lst):
     counts = {}
     for item in lst:
         counts[item] = counts.get(item, 0) + 1
-    return counts   
+    return counts  
 
 
 def drop_missing(df):
