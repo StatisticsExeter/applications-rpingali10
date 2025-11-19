@@ -46,7 +46,7 @@ def count_occurrences(lst):
     counts = {}
     for item in lst:
         counts[item] = counts.get(item, 0) + 1
-    return counts    
+    return counts   
 
 
 def drop_missing(df):
@@ -59,4 +59,3 @@ def value_counts_df(df, column):
     """Given a dataframe 'df' with various columns and the name of one of those columns 'column',
     return a DataFrame with value counts of the specified column."""
     return df[column].value_counts().reset_index(name="count").rename(columns={'index': column})
-
