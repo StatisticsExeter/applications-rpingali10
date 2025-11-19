@@ -25,7 +25,7 @@ def filter_even(numbers):
 def get_fifth_row(df):
     """Given a dataframe 'df'
     return the fifth row of this as a pandas DataFrame."""
-    return df.iloc[[4]]
+    return df.iloc[4]
 
 
 def column_mean(df, column):
