@@ -7,7 +7,7 @@ def sum_list(numbers):
 def max_value(numbers):
     """Given a list of numbers 'numbers'
     return the maximum value of this list."""
-    return max(numbers)
+    return max(numbers) if numbers else None
 
 
 def reverse_string(s):
@@ -58,5 +58,5 @@ def drop_missing(df):
 def value_counts_df(df, column):
     """Given a dataframe 'df' with various columns and the name of one of those columns 'column',
     return a DataFrame with value counts of the specified column."""
-     return df[column].value_counts().reset_index(name="count")
+    return df[column].value_counts().reset_index(name="count").rename(columns={'index': column})
 
