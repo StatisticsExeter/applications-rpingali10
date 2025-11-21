@@ -1,9 +1,9 @@
 # generate_cache.py
 
-from course.intro.pipeline_functions import(
+from course.intro.pipeline_functions import (
   tyler_viglen,calculate_correlation, 
   fit_regression, plot_scatter
-  )
+)
 import os
 
 # Make sure cache folder exists
