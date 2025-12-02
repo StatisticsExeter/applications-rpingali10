@@ -11,6 +11,7 @@ def run_pca():
     comps = pca.fit_transform(X)
 
     out = pd.DataFrame(comps, columns=["PC1", "PC2"])
+    # Make sure this path exists
     out.to_csv("data_cache/pca.csv", index=False)
 
     fig = px.scatter(out, x="PC1", y="PC2", title="PCA (2 components)")
