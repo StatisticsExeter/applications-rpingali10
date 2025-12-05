@@ -4,6 +4,7 @@ from sklearn.decomposition import PCA
 import plotly.express as px
 
 def run_pca():
+    print(">>> RUNNING PCA FUNCTION <<<")
     df = pd.read_csv("data_cache/unsupervised.csv")
     X = StandardScaler().fit_transform(df)
 
@@ -11,8 +12,8 @@ def run_pca():
     comps = pca.fit_transform(X)
 
     out = pd.DataFrame(comps, columns=["PC1", "PC2"])
-    # Make sure this path exists
     out.to_csv("data_cache/pca.csv", index=False)
 
     fig = px.scatter(out, x="PC1", y="PC2", title="PCA (2 components)")
     fig.write_html("vignettes/unsupervised/cache/pca_plot.html")
+
