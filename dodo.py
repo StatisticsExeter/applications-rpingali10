@@ -98,7 +98,9 @@ def task_pca():
             Path("vignettes/unsupervised/cache/pca_plot.html")
         ],
         'clean': True,
+        'uptodate': [False],  # Always run
     }
+
 
 # ----------------------------
 #  K-Means Clustering
@@ -112,7 +114,9 @@ def task_kmeans():
             Path("vignettes/unsupervised/cache/kmeans_plot.html")
         ],
         'clean': True,
+        'uptodate': [False],  # Always run
     }
+
 
 # ----------------------------
 #  Render Quarto
