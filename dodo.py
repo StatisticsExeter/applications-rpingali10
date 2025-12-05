@@ -100,13 +100,12 @@ def task_pca():
         'clean': True,
     }
 
-
 # ----------------------------
 #  K-Means Clustering
 # ----------------------------
 def task_kmeans():
     return {
-        'actions': [run_kmeans],
+        'actions': [lambda: run_kmeans()],
         'file_dep': [Path("data_cache/pca.csv")],
         'targets': [
             Path("data_cache/kmeans.csv"),
