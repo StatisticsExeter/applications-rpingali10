@@ -91,7 +91,7 @@ def task_plot_scatterplot():
 # ----------------------------
 def task_pca():
     return {
-        'actions': [run_pca],
+        'actions': [lambda: run_pca()],
         'file_dep': [Path("data_cache/unsupervised.csv")],
         'targets': [
             Path("data_cache/pca.csv"),
@@ -99,6 +99,7 @@ def task_pca():
         ],
         'clean': True,
     }
+
 
 # ----------------------------
 #  K-Means Clustering
