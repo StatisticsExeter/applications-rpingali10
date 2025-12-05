@@ -98,9 +98,8 @@ def task_pca():
             Path("vignettes/unsupervised/cache/pca_plot.html")
         ],
         'clean': True,
-        'uptodate': [False],  # Always run
+        'uptodate': [False],   # forces execution every time
     }
-
 
 # ----------------------------
 #  K-Means Clustering
