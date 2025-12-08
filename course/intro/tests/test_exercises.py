@@ -68,7 +68,7 @@ def test_get_fifth_row_case1():
     # Case 1 for get_fifth_row
     import pandas as pd
     df = pd.DataFrame({'A': range(10)})
-    assert get_fifth_row(df).equals df.iloc[4]
+    assert get_fifth_row(df).equals (df.iloc[4])
 
 
 def test_get_fifth_row_case2():
