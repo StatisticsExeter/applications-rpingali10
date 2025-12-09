@@ -117,14 +117,14 @@ def task_kmeans():
     }
 
 
-# ----------------------------
+# ----------
 #  Render Quarto
 # ----------------------------
 def task_render_quarto():
     return {
-        'actions': ["quarto render vignettes/unsupervised/coursework_unsupervised.qmd"],
-        'file_dep': [Path("vignettes/unsupervised/coursework_unsupervised.qmd")],
-        'targets': [Path("vignettes/unsupervised/coursework_unsupervised.html")],
+        'actions': ["quarto render vignettes/unsupervised/ict_unsupervised.qmd"],
+        'file_dep': [Path("vignettes/unsupervised/ict_unsupervised.qmd")],
+        'targets': [Path("vignettes/unsupervised/ict_unsupervised.html")],
         'clean': True,
     }
 
