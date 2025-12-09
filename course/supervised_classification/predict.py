@@ -2,6 +2,7 @@ import joblib
 import pandas as pd
 from course.utils import find_project_root
 
+
 def predict(model_path, X_test_path, y_pred_path, y_pred_prob_path):
     model = joblib.load(model_path)
     X_test = pd.read_csv(X_test_path)
@@ -18,6 +19,7 @@ def predict(model_path, X_test_path, y_pred_path, y_pred_prob_path):
         )
         prob_df.to_csv(y_pred_prob_path, index=False)
 
+
 def pred_lda():
     base_dir = find_project_root()
     model_path = base_dir / 'data_cache' / 'models' / 'lda_model.joblib'
@@ -26,6 +28,7 @@ def pred_lda():
     y_pred_prob_path = base_dir / 'data_cache' / 'models' / 'lda_y_pred_prob.csv'
     predict(model_path, X_test_path, y_pred_path, y_pred_prob_path)
 
+
 def pred_qda():
     base_dir = find_project_root()
     model_path = base_dir / 'data_cache' / 'models' / 'qda_model.joblib'
@@ -33,4 +36,3 @@ def pred_qda():
     y_pred_path = base_dir / 'data_cache' / 'models' / 'qda_y_pred.csv'
     y_pred_prob_path = base_dir / 'data_cache' / 'models' / 'qda_y_pred_prob.csv'
     predict(model_path, X_test_path, y_pred_path, y_pred_prob_path)
-
