@@ -52,8 +52,8 @@ def _cutree(tree, height):
     """Given a scipy.cluster.hierarchy hierarchical clustering solution and a float of the height
     Cut the tree at that hight and return the solution (cluster group membership) as a
     data frame with one column called 'cluster'"""
-    clusters = fcluster(tree, t=height, criterion='distance')
-    return clusters
+    clusters = fcluster(tree, height, criterion='distance')
+    return pd.DataFrame({'cluster': clusters})
 
 def _pca(df):
     """Given a dataframe of only suitable variables
@@ -70,6 +70,6 @@ def _scatter_clusters(df):
     return a plotly express scatterplot of PC1 versus PC2
     with marks to denote cluster group membership"""
     fig = px.scatter(df, x='PC1', y='PC2', color='cluster',
-                     title='Hierarchical Clusters with PCA',
+                     title="PCA Scatter Plot Colored by Cluster Labels",
                      labels={'cluster': 'Cluster'})
     return fig
