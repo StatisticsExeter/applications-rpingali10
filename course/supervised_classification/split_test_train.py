@@ -38,4 +38,3 @@ def split_data(base_data_path, X_train_path, y_train_path, X_test_path, y_test_p
     y_train.to_csv(y_train_path, index=False)
     X_test.to_csv(X_test_path, index=False)
     y_test.to_csv(y_test_path, index=False)
-
