@@ -11,15 +11,34 @@ def plot_scatter():
     df = pd.read_csv(base_dir / 'data_cache' / 'energy.csv')
     outpath = base_dir / VIGNETTE_DIR / 'scatterplot.html'
     title = "Energy variables showing different built_age type"
+
     fig = scatter_onecat(df, 'built_age', title)
     fig.write_html(outpath)
+    return fig
 
 
 def scatter_onecat(df, cat_column, title):
-    """Return a plotly express figure which is a scatterplot of all numeric columns in df
+    """
+    Return a plotly express figure which is a scatterplot of all numeric columns in df
     with markers/colours given by the text in column cat_column
-    and overall title specfied by title"""
-    return 0
+    and overall title specified by title
+    """
+
+    numeric_cols = df.select_dtypes(include='number').columns
+
+    # Use first two numeric columns for scatter
+    x_col = numeric_cols[0]
+    y_col = numeric_cols[1]
+
+    fig = px.scatter(
+        df,
+        x=x_col,
+        y=y_col,
+        color=cat_column,
+        title=title
+    )
+
+    return fig
 
 
 def get_frequencies(df, cat_column):
@@ -37,9 +56,11 @@ def get_summary_stats():
     base_dir = find_project_root()
     df = pd.read_csv(base_dir / 'data_cache' / 'energy.csv')
     cat_column = 'built_age'
+
     frequencies = get_frequencies(df, cat_column)
     outpath_f = base_dir / VIGNETTE_DIR / 'frequencies.csv'
     frequencies.to_csv(outpath_f)
+
     summary_stats = get_grouped_stats(df, cat_column)
     outpath_s = base_dir / VIGNETTE_DIR / 'grouped_stats.csv'
     summary_stats.to_csv(outpath_s)
