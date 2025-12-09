@@ -44,7 +44,7 @@ def _plot_dendrogram(df):
     """Given a dataframe df containing only suitable variables
     Use plotly.figure_factory to plot a dendrogram of these data"""
     fig = ff.create_dendrogram(df, color_threshold=0)
-    fig.update_layout(width=800, height=500, title='Hierarchical Dendrogram')
+    fig.update_layout(width=800, height=500, title="Interactive Hierarchical Clustering Dendrogram")
     return fig
 
 
