@@ -6,10 +6,10 @@ from sklearn.model_selection import train_test_split
 def test_and_train():
     base_data_path = Path("data_cache") / "energy.csv"
 
-    X_train_path = Path("data_cache") / "X_train.csv"
-    y_train_path = Path("data_cache") / "y_train.csv"
-    X_test_path  = Path("data_cache") / "X_test.csv"
-    y_test_path  = Path("data_cache") / "y_test.csv"
+    X_train_path = Path("data_cache") / "energy_X_train.csv"
+    y_train_path = Path("data_cache") / "energy_y_train.csv"
+    X_test_path  = Path("data_cache") / "energy_X_test.csv"
+    y_test_path  = Path("data_cache") / "energy_y_test.csv"
 
     split_data(base_data_path, X_train_path, y_train_path, X_test_path, y_test_path)
 
