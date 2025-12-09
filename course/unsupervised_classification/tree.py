@@ -55,6 +55,7 @@ def _cutree(tree, height):
     clusters = fcluster(tree, height, criterion='distance')
     return pd.DataFrame({'cluster': clusters})
 
+
 def _pca(df):
     """Given a dataframe of only suitable variables
     return a dataframe of the first two pca predictions (z values) with columns 'PC1' and 'PC2'"""
