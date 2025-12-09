@@ -14,7 +14,7 @@ def plot_scatter():
 
     fig = scatter_onecat(df, 'built_age', title)
     fig.write_html(outpath)
-    return fig
+    return None
 
 
 def scatter_onecat(df, cat_column, title):
