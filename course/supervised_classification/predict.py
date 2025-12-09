@@ -4,14 +4,23 @@ from course.utils import find_project_root
 
 
 def predict(model_path, X_test_path, y_pred_path, y_pred_prob_path):
+
     model = joblib.load(model_path)
+
     X_test = pd.read_csv(X_test_path)
-    """Form an object y_pred containing a list of your classifer predictions"""
+
+    y_pred = model.predict(X_test)
     y_pred_series = pd.Series(y_pred, name='predicted_built_age')
     y_pred_series.to_csv(y_pred_path, index=False)
-    """Form an object y_pred_prob containing a list of your classifer probabilities"""
-    y_pred_prob_series = pd.Series(y_pred_prob, name='predicted_built_age')
-    y_pred_prob_series.to_csv(y_pred_prob_path, index=False)
+
+    if hasattr(model, "predict_proba"):
+        y_pred_prob = model.predict_proba(X_test)
+        prob_df = pd.DataFrame(y_pred_prob, columns=model.classes_)
+        prob_df.to_csv(y_pred_prob_path, index=False)
+    else:
+        pd.DataFrame().to_csv(y_pred_prob_path, index=False)
+
+    return None
 
 
 def pred_lda():
@@ -30,3 +39,4 @@ def pred_qda():
     y_pred_path = base_dir / 'data_cache' / 'models' / 'qda_y_pred.csv'
     y_pred_prob_path = base_dir / 'data_cache' / 'models' / 'qda_y_pred_prob.csv'
     predict(model_path, X_test_path, y_pred_path, y_pred_prob_path)
+
