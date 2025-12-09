@@ -13,7 +13,9 @@ def _fit_model(df):
     Fit a linear mixed model with shortfall as the response variable
     n_rooms and age as fixed predictors
     with local_authority_code as a random effect"""
-    return 0
+    model = smf.mixedlm("shortfall ~ age + n_rooms", df, groups=df["local_authority_code"])
+    results = model.fit()
+    return results
 
 
 def _save_model_summary(model, outpath):
