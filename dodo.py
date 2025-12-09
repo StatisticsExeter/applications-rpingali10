@@ -16,10 +16,13 @@ from course.unsupervised_classification.clustering import run_kmeans
 # ----------------------------
 #  Folder checks
 # ----------------------------
+
+
 def task_check_cache():
     def check_cache():
         Path("data_cache/models").mkdir(parents=True, exist_ok=True)
     return {'actions': [check_cache]}
+
 
 def task_check_vignettes():
     def check_vignettes():
@@ -29,6 +32,8 @@ def task_check_vignettes():
 # ----------------------------
 #  Load Data
 # ----------------------------
+
+
 def task_load_data():
     def load_data():
         df = pd.read_csv(Path("data/olive_oil.csv"))
@@ -43,6 +48,8 @@ def task_load_data():
 # ----------------------------
 #  EDA tasks
 # ----------------------------
+
+
 def task_summary_stats():
     return {
         'actions': [summary_stats],
@@ -52,6 +59,7 @@ def task_summary_stats():
         ],
         'targets': [Path("vignettes/unsupervised/cache/olive_oil_summary.html")],
     }
+
 
 def task_plot_raw_boxplot():
     return {
@@ -64,6 +72,7 @@ def task_plot_raw_boxplot():
         'clean': True,
     }
 
+
 def task_plot_scaled_boxplot():
     return {
         'actions': [generate_scaled_boxplot],
@@ -74,6 +83,7 @@ def task_plot_scaled_boxplot():
         'targets': [Path("vignettes/unsupervised/cache/scaled_boxplot.html")],
         'clean': True,
     }
+
 
 def task_plot_scatterplot():
     return {
@@ -89,6 +99,8 @@ def task_plot_scatterplot():
 # ----------------------------
 #  PCA (Dimension Reduction)
 # ----------------------------
+
+
 def task_pca():
     return {
         'actions': [lambda: run_pca()],
@@ -104,6 +116,8 @@ def task_pca():
 # ----------------------------
 #  K-Means Clustering
 # ----------------------------
+
+
 def task_kmeans():
     return {
         'actions': [lambda: run_kmeans()],
@@ -120,6 +134,8 @@ def task_kmeans():
 # ----------
 #  Render Quarto
 # ----------------------------
+
+
 def task_render_quarto():
     return {
         'actions': ["quarto render vignettes/unsupervised/ict_unsupervised.qmd"],
@@ -127,4 +143,3 @@ def task_render_quarto():
         'targets': [Path("vignettes/unsupervised/ict_unsupervised.html")],
         'clean': True,
     }
-
