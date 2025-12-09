@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.metrics import classification_report
 from course.utils import find_project_root
 
+
 def metric_report(y_test_path, y_pred_path, report_path):
     y_test = pd.read_csv(y_test_path).iloc[:, 0]
     y_pred = pd.read_csv(y_pred_path).iloc[:, 0]
