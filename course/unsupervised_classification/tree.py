@@ -26,9 +26,9 @@ def hierarchical_groups(height):
     scaler = StandardScaler()
     df_scaled = scaler.fit_transform(df)
     linked = _fit_dendrogram(df_scaled)
-    clusters = _cutree(linked, height)  # adjust this value based on dendrogram scale
+    clusters = _cutree(linked, height)
     df_plot = _pca(df_scaled)
-    df_plot['cluster'] = clusters.astype(str)  # convert to string for color grouping
+    df_plot['cluster'] = clusters.astype(str)
     outpath = base_dir / VIGNETTE_DIR / 'hscatter.html'
     fig = _scatter_clusters(df_plot)
     fig.write_html(outpath)
@@ -54,11 +54,8 @@ def _cutree(tree, height):
     """Given a scipy.cluster.hierarchy hierarchical clustering solution and a float of the height
     Cut the tree at that hight and return the solution (cluster group membership) as a
     data frame with one column called 'cluster'"""
-    linked = _fit_dendrogram(df)
-    fig = ff.create_dendrogram(df, linkagefun=lambda x: linked)
-    fig.update_layout(width=800, height=600)
-    return fig
-
+    clusters = fcluster(tree, t=height, criterion='distance')
+    return clusters
 
 def _pca(df):
     """Given a dataframe of only suitable variables
