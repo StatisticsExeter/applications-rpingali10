@@ -7,7 +7,6 @@ from pathlib import Path
 
 def run_pca():
     print(">>> RUNNING PCA FUNCTION <<<")
-    
     base_cache = Path("data_cache")
     vignette_cache = Path("vignettes") / "unsupervised" / "cache"
 
