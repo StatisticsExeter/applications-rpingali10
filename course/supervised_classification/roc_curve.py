@@ -1,9 +1,6 @@
 import pandas as pd
 import plotly.graph_objects as go
 from sklearn.metrics import roc_curve, auc
-import pandas as pd
-import plotly.graph_objects as go
-from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import LabelBinarizer
 from course.utils import find_project_root
 
