@@ -1,4 +1,3 @@
-import plotly.express as px
 import pandas as pd
 from pathlib import Path
 from course.utils import find_project_root
@@ -10,7 +9,6 @@ def _boxplot(df, x_var, y_var, title):
     """Given a data frame 'df' containing categorical variable 'x_var'
     and outcome variable 'y_var' produce a box plot of the distribution of the y_variable
     for different levels of y_var. The box plot should have title 'title'"""
-    import plotly.express as px
     fig = px.box(df, x=x_var, y=y_var, points='all', title=title)
     return fig
 
