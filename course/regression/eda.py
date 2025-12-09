@@ -25,4 +25,3 @@ def boxplot_rooms():
     df = pd.read_csv(base_dir / 'data_cache' / 'la_energy.csv')
     fig = _boxplot(df, 'n_rooms', 'shortfall', 'Shortfall by Number of Rooms')
     fig.write_html(VIGNETTE_DIR / 'boxplot_rooms.html')
-
