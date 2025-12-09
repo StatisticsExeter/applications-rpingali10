@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import plotly.express as px
 
+
 def run_kmeans(k=4):
     df = pd.read_csv("data_cache/pca.csv")
 
