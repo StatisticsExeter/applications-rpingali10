@@ -43,9 +43,9 @@ def _fit_dendrogram(df):
 def _plot_dendrogram(df):
     """Given a dataframe df containing only suitable variables
     Use plotly.figure_factory to plot a dendrogram of these data"""
-    fig = ff.create_dendrogram(df, color='cluster')
-    fig.update_layout(width=800, height=500, title="Interactive Hierarchical Clustering Dendrogram")
-    return fig
+    dend_fig = ff.create_dendrogram(df)
+    dend_fig.update_layout(title="Interactive Hierarchical Clustering Dendrogram")
+    return dend_fig
 
 
 def _cutree(tree, height):
