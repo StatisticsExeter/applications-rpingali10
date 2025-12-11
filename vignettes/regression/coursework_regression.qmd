@@ -12,19 +12,28 @@ format:
 
 ## Your task
 
-This material is provided as context to the problem. You should rewrite it as you see fit.
+This investigation looks into whether variations in property attributes may account for variations in carbon emissions between English and Welsh local authorities.  The purpose is not to anticipate emissions for individual properties, but rather to investigate **how much of the variation across authorities persists after accounting for housing stock differences**, specifically if older housing stock or bigger residences cause greater emissions.
+
+We employ a mixed-effects model since we have several measures (house "types") inside each local authority.  The fixed effects reflect systematic variances relating to age and room count, whereas the random effects measure how much each authority deviates from the national norm.
 
 ## The Problem
 
-Data on [Energy Certificates](https://epc.opendatacommunities.org/) were downloaded in March 2025. These certificates are a non-random sample of UK housing, and contain information such as:
+The Energy Performance Certificate (EPC) data provides precise measurements of building energy parameters, including: 
 
-- Property energy efficiency: The core data is the energy efficiency rating, which ranges from A (most efficient) to G (least efficient).
-- CO2 emissions: The data includes information on the building's likely carbon dioxide emissions.
-- Energy costs: Potential costs for heating and lighting the property are provided.
-- Improvement recommendations: Each EPC lists cost-effective ways to improve the building's energy performance.
+- Energy efficiency rating (A-G)
+- Estimated yearly CO₂ emissions 
 
-We have been asked by a local company to determine whether some local authorities are better than others in terms of reducing the carbon footprint of properties in their area.  However, some authorities have older housing stock which is innately has a larger carbon footprint. Likewise, some have larger properties than others.  The initial brief is to carry out an aggregate data analysis where the unit of analysis is a local authority.  We have been asked to consider the average carbon footprint of a house in a given area conditional on being pre- or post-1930 and having between 1 and 10 heated rooms.  This should let you fit a model which has fixed effects for the number of houses of pre-1930, post-1930 and 1, 2, 3, ..., 10 heated rooms
+- **Expenses for heating, lighting, and hot water** 
+- **Suggestions for improvement**
 
+The housing stock varies per local authority. Some regions have a high concentration of **pre-1930 properties**, which suffer from inadequate insulation and outdated building practices. Others have larger homes that often demand more heating energy.
+
+We were requested to compare authorities **fairly**, while allowing for: 
+
+- Whether properties are **pre-1930** or **post-1930**. 
+- the **number of heated rooms** (1–10). 
+
+This naturally leads to the mixed model shown below:
 
 $$Y_{ji} = \beta_0 + \beta_1 x_{j}^{(\text{old})} + \sum_{r=1}^{10} \beta_r x_{j}^{(r)} + \gamma_j$$
 
@@ -43,12 +52,17 @@ Where
 
 Some initial exploratory data analysis shows us how the carbon emissions vary by age of property and by the number of rooms:
 
-
-
 ![](../../data_cache/vignettes/regression/boxplot_age.html){width="100%" height="600px"}
 
 ![](../../data_cache/vignettes/regression/boxplot_rooms.html){width="100%" height="600px"}
 
+The plots indicate:
+
+- **Pre-1930 homes produce much more CO₂**, indicating older building quality.
+- **Emissions increase progressively with each new room**, as larger homes require more energy.
+
+
+ These patterns warrant incorporating both variables in the fixed-effects model.
 
 ## The model
 
@@ -63,8 +77,61 @@ with open('../../data_cache/vignettes/regression/model_fit.txt') as f:
     content = f.read()
     print(content)
 ```
+Below is the summary of the fitted mixed-effects model :
+Model: MixedLM Dependent Variable: shortfall
+No. Observations: 6917 Method: REML
+No. Groups: 346 Scale: 3.5884
+Min. group size: 17 Log-Likelihood: -14453.0511
+Max. group size: 20 Converged: Yes
+Mean group size: 20.0
+Intercept - 2.409 0.065 37.206 0.000 2.282 2.536
+age[T.Recent] - -2.981 0.046 -65.447 0.000 -3.071 -2.892
+n_rooms - 1.054 0.008 132.940 0.000 1.039 1.070
+Group Var - 0.434 0.025
+
+### Fixed effects interpretation
+
+#### Intercept (β₀ = 2.409)  
+This is the anticipated amount of emissions for:
+- a **pre-1930** property  
+- with **1 heated room**  
+- in an “average” local authority
+
+### Property age's impact (β₁ = –2.981)
+
+ The **post-1930** and **pre-1930** residences are compared using the coefficient for `age[T.Recent]`.
 
 
+ -**On average, homes built after 1930 release 2.981 less units of CO2.**
+
+ This impact (|z| > 65) is **large and extremely significant**.  
+ It demonstrates that **newer buildings are significantly more carbon-efficient**.
+ 
+ ### **The impact of the number of rooms (β₂ = 1.054)**
+
+ Emissions rise with each extra heated room by:
+
+
+- On average, **+1.054 units of CO2**.
+
+Once more, this is a fairly substantial influence (z ≈ 133), demonstrating that one of the main causes of emissions is **property size.
+
+### Random effects (0.434 group variance)
+
+After accounting for the following, the random effect shows **how much each local authority deviates from the national average**.
+
+
+-The allocation of property ages  
+-The quantity of rooms
+
+A variance of 0.434 means:
+
+-There are still actual disparities amongst authorities.  
+-Some consistently perform better or worse than the national average.  
+-These variations cannot be entirely explained by the features of housing alone.
+
+ Examining the caterpillar plot is motivated by this.
+ 
 ## The key insight
 
 We've been asked to rate local authority performance, so the most important result is a ``caterpillar plot'' of the random effects.
@@ -72,23 +139,40 @@ We've been asked to rate local authority performance, so the most important resu
 
 ![](../../data_cache/vignettes/regression/caterpillar.html){width="100%" height="600px"}
 
-##  Additional credit
+### How to understand the plot
 
-For additional credit you might like to enhance the exploratory data analysis. You could consider residual diagnostics to check the validity of the model fit. You may also like to consider the appropriateness of the adjusting variables age and number of rooms. You could consider extracting further variables from the database and fitting a slightly more elaborate model.
+- **Left-leaning authorities have **negative random effects**
+-Their housing stock causes them to release **less CO2 than expected**  
+-Their performance is **better** than average.
+
+- **Authorities on the right** have **positive random effects**
+-They perform **worse** than average
+-They release **more CO₂ than expected**.
+
+-Each estimate's statistical accuracy is displayed via the confidence intervals.
+
+### What this implies
+
+Even after accounting for:
+
+-The quantity of houses built before 1930
+-The average size of buildings  
+
+**Certain authorities routinely attain reduced emissions**, indicating:
+
+-Improved insulation programs
+-More advanced heating systems  
+-Local policy changes
+-Sociodemographic variations that the model does not account for.
+
+On the other hand, **underperforming authorities** could need specific assistance or further research.
 
 
-## Record of AI use for MTHM503 Regression coursework
+## Record of AI use for MTHM503 supervised coursework
 
 Instructions: You can use this document to record when, how and why you used GenAI to complete your assessment. It will help you create a record of AI use to submit alongside your references for AI-integrated and AI-assisted assignments. It may also be useful to help you discuss your AI use if you are required to do so in an academic conduct meeting.
 
-| **Date**       | **AI tool used** | **Purpose**                                | **Prompt**                                 | **Hyperlink to output (where possible)** | **Section of work used for** |
-|----------------|------------------|--------------------------------------------|--------------------------------------------|------------------------------------------|-------------------------------|
-| E.g. 15/07/2025| MS Copilot       | To help create an organised essay structure| ‘Generate ideas for structuring an essay on...’ | [insert link]                          | introduction                  |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
+| Date       | AI tool used | Purpose                                   | Prompt                                                                 | Hyperlink to output (where possible) | Section of work used for |
+|------------|-------------|-------------------------------------------|------------------------------------------------------------------------|-------------------------------------|-------------------------|
+| 11/12/2025 | ChatGPT     | To improve structure and academic tone    | “Can you help me improve the structure and check the academic tone?”   | N/A                                 | Multiple Sections             |
+| 10/12/2025 | ChatGPT     | To improve grammar and academic wording   | “Check the paragraph for any grammatical errors and see if the words are suitable for an academic tone” | N/A | Multiple Sections      |

@@ -4,122 +4,181 @@ author: "Anonymous"
 format: 
   html:
     embed-resources: true
-
 ---
 
 ## Your task
 
-This material is provided as context to the problem. You should rewrite it as you see fit.  IN particular, you should demonstrate you understand why we are undertaking a cluster analysis, and what the various methods are telling us.  In particular, you should explain how principal components helps us visualise the results of the clustering.
+This analysis investigates if local authorities in Great Britain can be classified based on the sorts of traffic collisions that occur in their region.  The purpose is to uncover trends in collision characteristics and groupings of authority with similar road-safety profiles, rather than to anticipate them.
 
+Cluster analysis is useful here because it:
+
+- reduces a large multivariate dataset into a small number of meaningful groups,
+- helps us understand which authorities face similar road-safety challenges,
+- provides a basis for targeted policy interventions,
+- reveals structure that may not be visible in raw data.
+
+Principal Components Analysis (PCA) is used throughout to help visualise these high-dimensional patterns in two dimensions, allowing us to interpret the clustering more easily.
+
+---
 
 ## The Problem
 
-Police recorded data in Great Britain is called "Stats19" and is available at <https://www.data.gov.uk/dataset/cb7ae6f0-4be6-4935-9277-47e5ce24a11f/road-accidents-safety-data>.  These data are typically split into three linked tables:
+The "Stats19" dataset includes police-reported traffic incidents in Great Britain.  It is composed of three connected tables:
 
-- Accidents
+-**Accidents**- Location, road conditions, weather, illumination, and other factors can all contribute to an accident.
 
-  Each row represents a single reported accident. Key fields include:
+-**Vehicles**- Vehicle types, manoeuvres, and driver characteristics.
 
-  - Date and time
-  - Location (e.g. latitude/longitude, local authority)
-  - Road type and conditions
-  - Weather and lighting
-  - Number of vehicles and casualties
+-**Casualties** — Severity, age, and kind.
 
-- Vehicles
+ For this study, data is grouped by local authority.  Each authority has the following number of accidents:
 
-  Each row represents a vehicle involved in an accident. Includes:
+-At miniature roundabouts,
 
-  - Vehicle type and age
-  - Manoeuvre and direction
-  - Driver age and sex
+-In the rain.
 
-- Casualties
-  
-  Each row represents a person injured or killed. Includes:
+-In the dark,
 
-  - Casualty type (pedestrian, cyclist, driver, etc.)
-  - Severity (slight, serious, fatal)
-  - Age, sex, and mode of transport
+-On dry roads
 
-These tables are linked via a unique accident index.
+-In urban regions,
 
+-The most serious injuries were minor ones. 
 
-We are interested in creating clusters of like authorities based on the kinds of collisions that occur in their area.  You have been given a count of the number of collisions at Mini-roundabout, in the Rain, in the Dark, when the road is Dry, in an urban setting and where the most seriously injured casualty was reported as having a slight injury.
+These counts are transformed to proportions and rescaled such that all variables contribute equally to grouping. The goal is to see if local governments form natural groupings based on these collision features.
 
-Some previous cluster analysis work has been reported at:
-
-- [ Cluster analysis](https://ijirt.org/publishedpaper/IJIRT175966_PAPER.pdf)
-- [More cluster analysis](https://www.researchgate.net/publication/357727987_Identification_of_Traffic_Accident_Patterns_via_Cluster_Analysis_and_Test_Scenario_Development_for_Autonomous_Vehicles/fulltext/61dcdc17034dda1b9eebd63d/Identification-of-Traffic-Accident-Patterns-via-Cluster-Analysis-and-Test-Scenario-Development-for-Autonomous-Vehicles.pdf)
-
+---
 
 ## The Data
 
-The first thing we can do is consider a scatterplot of the data
+A simple scatterplot of the raw proportions gives a first impression of the data:
 
 ![](../../data_cache/vignettes/unsupervised_classification/scatterplot.html){width="100%" height="600px"}
 
-We are going to use the proportion of each subtype of collision that was reported, and rescale the variables.
+### Scatter-matrix interpretation
 
+There are several distinct patterns that stand out:
+
+- The majority of incidents in the UK involve minor injuries, as evidenced by the high positive    correlation between n_slight and n_total.
+- Dry-road crashes predominate in the dataset, as evidenced by the extremely high shares of n_dry (0.6–0.9) in the majority of authority.
+- There are a lot of urban collisions in some jurisdictions and a lot of rural collisions in others.
+- The moderate variability of n_raining and n_dark contributes to their separation in subsequent clustering.
+- Mini-roundabout collisions (**n_mini**) are uncommon in most regions and only serve as a distinguishing characteristic in some clusters.
+
+These distinctions aid in the explanation of why PCA and clustering subsequently divide authorities according to environmental, lighting, and meteorological patterns.
+
+---
 
 ## Hierarchical clustering
 
-
-The first task is to perform hierarchical clustering.
+Hierarchical clustering constructs a tree (dendrogram), showing how local authorities can be grouped step-by-step according to similarity in their collision profiles.
 
 ![](../../data_cache/vignettes/unsupervised_classification/dendrogram.html){width="100%" height="600px"}
 
+### Choosing a cut-point
 
-You need to select a suitable ``cut-point'' and cut the tree at an appropriate height to form a number of clusters.
+The height of the branches reflects the dissimilarity between groups. A suitable cut-point is one that:
 
-To aid visualisation of results, you should plot the cluster membership on a scatterplot of the first two principal components.
+- avoids many tiny clusters,
+- respects major jumps in the dendrogram height,
+- reflects meaningful structural differences.
 
+Cutting too low gives dozens of tiny clusters; cutting too high gives one or two oversized clusters with no interpretive value. A mid-level cut is typically appropriate, often producing around 3–5 clusters depending on the data.
+
+### Visualising hierarchical clusters with PCA
+
+To analyse the clusters, we divide the high-dimensional data into two primary components.  PCA identifies the directions of highest variance in the dataset, allowing us to visualise the structure using a simple 2-D graphic.
 
 ![](../../data_cache/vignettes/unsupervised_classification/kscatter.html){width="100%" height="600px"}
 
+### Interpretation
 
-## kmeans clustering
+The PCA plot clearly reveals **four unique clusters**:
 
+- **Cluster 0 (blue)** — a dense group in the middle that represents typical authorities with balanced collision patterns.  
+- **Cluster 1 (red)** is somewhat divided along PC2, indicating locations with more dark or wet collisions.  
 
-The second task is to perform k-means clustering. You should select an appropriate number of clusters.
-First, you should look at the cluster centroids:
+- **Cluster 3 (green)** — clearly split to the right (high PC1), indicating authorities involved in a mix of urban and dry-road collisions.  
+- **Cluster 2 (purple)** is distributed to the left, showing rural or low-volume authorities with different weather/lighting patterns.
 
+ PCA shows that:
+
+- **PC1 captures variations between dry/urban versus wet/dark profiles**.
+- **PC2 reflects severity and illumination differences**, making it a suitable place for visualising clusters.
+---
+
+## k-means clustering
+
+We then use **k-means clustering**, which divides the authorities into *k* groups while reducing within-cluster variance.  Unlike hierarchical clustering, k-means needs a predetermined number of groups.
+
+### Choosing the number of clusters
+
+A value of **k = 4** was selected, backed by:
+
+ - Hierarchical findings with obvious structure in the PCA plot.
+
+ - Interpretability of the obtained centroids.
+
+### Cluster centroids
+
+The centroids of each cluster give the average profile of authorities in that group.
 
 ![](../../data_cache/vignettes/unsupervised_classification/kcentroids1.html){width="100%" height="600px"}
 
-
 ![](../../data_cache/vignettes/unsupervised_classification/kcentroids2.html){width="100%" height="600px"}
 
+### Interpretation
 
-As before you should plot the cluster membership on a scatterplot of the first two principal components.
+Typical results consist of:
+
+-**Cluster 3** when compared to the clusters displays **very high n_urban** which is typical of cities and urban areas. 
+-All the clusters that are shown exhibit **low n_dark and n_raining**, which is typical of authorities in rural or coastal areas with challenging weather.  
+-All clusters are similar,when they display **very high proportions of dry-road collisions**. This means that they are in warmer or less rainy areas.  
+-All clusters have a **lower or negligible mini-roundabout proportions**.
+
+For every cluster, these centroid discrepancies offer significant storylines.
+
+
+### Visualising k-means clusters with PCA
+
+As before, PCA allows us to display the clusters in two dimensions:
 
 ![](../../data_cache/vignettes/unsupervised_classification/kscatter.html){width="100%" height="600px"}
 
+### Interpretation
 
+The k-means clusters show up:
 
+-**less overlapping**,
+-**more compact**,
+-**more clearly separated along PC1**
 
+This is indicating that the kmeans captures strong structural variations in collision patterns.
 
-##  Additional credit
+---
 
-For additional credit you should consider adding a further unsupervised classification method. Alternatively, you could increase the number of variables used in the clustering.
+## Why PCA is essential for this analysis
 
+PCA is important because:
 
+ - It divides the 6-dimensional dataset into two axes, capturing the most of the variance.  
+ - It indicates which characteristic combinations cause the separation of authority.  
 
-## Record of AI use for MTHM503 unsupervised coursework
+ - It gives a visual assessment to determine whether clusters are meaningful or fake.  
+ - It clearly demonstrates that particular authorities have very different weather, illumination, and environment-related crash characteristics.
+
+ Without PCA, clustering would be difficult to comprehend and convey graphically.
+
+---
+
+## Record of AI use for MTHM503 supervised coursework
 
 Instructions: You can use this document to record when, how and why you used GenAI to complete your assessment. It will help you create a record of AI use to submit alongside your references for AI-integrated and AI-assisted assignments. It may also be useful to help you discuss your AI use if you are required to do so in an academic conduct meeting.
 
-| **Date**       | **AI tool used** | **Purpose**                                | **Prompt**                                 | **Hyperlink to output (where possible)** | **Section of work used for** |
-|----------------|------------------|--------------------------------------------|--------------------------------------------|------------------------------------------|-------------------------------|
-| E.g. 15/07/2025| MS Copilot       | To help create an organised essay structure| ‘Generate ideas for structuring an essay on...’ | [insert link]                          | introduction                  |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
-|                |                  |                                            |                                            |                                          |                               |
+| Date       | AI tool used | Purpose                                   | Prompt                                                                 | Hyperlink to output (where possible) | Section of work used for |
+|------------|-------------|-------------------------------------------|------------------------------------------------------------------------|-------------------------------------|-------------------------|
+| 10/12/2025 | ChatGPT     | To improve structure and academic tone    | “Can you help me improve the structure and check the academic tone?”   | N/A                                 | Multiple Sections            |
+| 11/12/2025 | ChatGPT     | To improve grammar and academic wording   | “Check the paragraph for any grammatical errors and see if the words are suitable for an academic tone” | N/A | Multiple Sections      |
 
 
 
